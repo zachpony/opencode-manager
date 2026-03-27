@@ -252,18 +252,20 @@ async function registerExistingLocalRepo(
   }
 
   const isGitRepo = await isValidGitRepo(normalizedSourcePath, env)
-  if (!isGitRepo) {
-    throw new Error(`Directory exists but is not a valid Git repository. Use folder discovery to scan nested repositories.`)
-  }
 
-  if (branch) {
-    const currentBranch = await safeGetCurrentBranch(normalizedSourcePath, env)
-    if (currentBranch !== branch) {
-      await checkoutBranchSafely(normalizedSourcePath, branch, env)
+  let currentBranch: string | null = null
+  if (isGitRepo) {
+    if (branch) {
+      const branchNow = await safeGetCurrentBranch(normalizedSourcePath, env)
+      if (branchNow !== branch) {
+        await checkoutBranchSafely(normalizedSourcePath, branch, env)
+      }
     }
+    currentBranch = await safeGetCurrentBranch(normalizedSourcePath, env)
+  } else {
+    logger.info(`Directory is not a git repo, registering as plain directory: ${normalizedSourcePath}`)
   }
 
-  const currentBranch = await safeGetCurrentBranch(normalizedSourcePath, env)
   const workspaceLocalPath = getWorkspaceLocalPathForRepo(normalizedSourcePath)
 
   if (workspaceLocalPath) {
@@ -287,7 +289,7 @@ async function registerExistingLocalRepo(
     cloneStatus: 'ready',
     clonedAt: Date.now(),
     isLocal: true,
-    isWorktree: await isGitWorktreeRepo(normalizedSourcePath),
+    isWorktree: isGitRepo ? await isGitWorktreeRepo(normalizedSourcePath) : false,
   })
 
   logger.info(`Registered local repo at ${normalizedSourcePath} as ${repoLocalPath}`)

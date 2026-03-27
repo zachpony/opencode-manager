@@ -14,16 +14,16 @@ export const GPU_ACCELERATED_STYLE: CSSProperties = {
 
 export const MODAL_TRANSITION_MS = 300
 
-function getPathBaseName(filePath: string): string {
-  return filePath.split(/[\\/]/).pop() || filePath
-}
-
 export function getRepoDisplayName(repoUrl?: string | null, localPath?: string | null, sourcePath?: string | null): string {
   if (repoUrl) {
     return repoUrl.split("/").pop()?.replace(".git", "") || "Repository"
   }
   if (sourcePath) {
-    return getPathBaseName(sourcePath) || localPath || 'Repository'
+    const parts = sourcePath.replace(/[\\/]+$/, '').split(/[\\/]/).filter(Boolean)
+    if (parts.length >= 2) {
+      return `${parts[parts.length - 2]}/${parts[parts.length - 1]}`
+    }
+    return parts[parts.length - 1] || localPath || 'Repository'
   }
   return localPath || "Repository"
 }

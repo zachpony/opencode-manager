@@ -131,7 +131,7 @@ export function AddRepoDialog({ open, onOpenChange }: AddRepoDialogProps) {
                   disabled={mutation.isPending}
                   className="text-blue-600 bg-[#1a1a1a] border-[#2a2a2a]"
                 />
-                <span className="text-sm text-white">Local Repository</span>
+                <span className="text-sm text-white">Local Directory</span>
               </label>
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -166,14 +166,14 @@ export function AddRepoDialog({ open, onOpenChange }: AddRepoDialogProps) {
             <div className="space-y-2">
               <label className="text-sm text-zinc-400">Local Path</label>
               <Input
-                placeholder="my-local-project OR /absolute/path/to/git-repo"
+                placeholder="my-local-project OR /absolute/path/to/directory"
                 value={localPath}
                 onChange={(e) => setLocalPath(e.target.value)}
                 disabled={mutation.isPending}
                 className="bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-zinc-500"
               />
               <p className="text-xs text-zinc-500">
-                Directory name for a new repo, or an absolute path to link an existing Git repo in place so its OpenCode sessions stay attached
+                Directory name for a new project, or an absolute path to link an existing directory as a project
               </p>
             </div>
           ) : (
